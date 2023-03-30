@@ -8,6 +8,30 @@
 	- other?
 - Essential to make sure we can reliably and securely collect data from each source and ensure that the data is in a standard format.
 
+## Tools
+
+Needs to deploy on VPC to avoid moving PHI data outside VPC
+
+- Azure Data Factory
+	- built-in mapping, transformation
+	- Custom code
+	 	- Functions for event response
+		 	- Languages: C#, Java, Python
+	 	- Databricks for transformation & ML workloads
+		 	- Spark/Scala, supports Python
+		 	- Need to manage cluster configs
+	- Loading Zone (?)
+		- Blob Storage
+		- SQL
+		- Cosmos DB
+		- Data Lake
+- NiFi
+- Talend
+- Informatica 
+- Google Cloud Dataflow
+- AWS Glue
+
+
 # Data Transformation
 
 - Determine the best approach to transform the data to a standardized format that is compatible with our analytics platform. 
