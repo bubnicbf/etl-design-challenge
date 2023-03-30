@@ -14,6 +14,7 @@ Needs to deploy on VPC to avoid moving PHI data outside VPC
 
 - Azure Data Factory
 	- built-in mapping, transformation
+	- batch processing (optimized for large data sets)
 	- Custom code
 	 	- Functions for event response
 		 	- Languages: C#, Java, Python
@@ -26,6 +27,11 @@ Needs to deploy on VPC to avoid moving PHI data outside VPC
 		- Cosmos DB
 		- Data Lake
 - NiFi
+	- built in protocols for IoT, social media
+		- Data factory can use iot hub connector
+	- real-time data processing
+	- excels at data routing
+
 - Talend
 - Informatica 
 - Google Cloud Dataflow
