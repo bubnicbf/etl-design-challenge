@@ -21,6 +21,15 @@ CuriMeta firmly believes that engineers are designers that happen to implement t
 	- The data schema is OMOP v5.3 and the schema is named “omop”
 		- https://ohdsi.github.io/CommonDataModel/cdm53.html
 		- Focus on only the 9 Clinical Data Tables listed below.
+			- death
+			- person
+			- observation
+			- procedure_occurrence
+			- visit_occurrence
+			- specimen
+			- drug_exposure
+			- condition_occurrence
+			- measurement
 	- Data is loaded to this schema once a week on Sunday and each data row has a “load_dt” timestamp column indicating when it was written to Databricks.
 		- New data rows are added at a rate of 0.25% per week increase in row count per table per cohort
 	- Databricks provides an SQL interface to support execution of select queries.
