@@ -282,3 +282,109 @@ This will extract data only for the patient identifiers in the approved_cohort_1
 ````
 
 - Note: this example assumes you have configured a DBCP connection pool in NiFi to connect to the Databricks environment, and that you have created a directory in the landing zone for each OMOP table.
+
+### Azura Data Factory example
+
+1. Create a new pipeline in Azure Data Factory.
+2. Add a Query activity to the pipeline for each OMOP table you want to extract.
+3. Configure the Query activities to use the appropriate SQL query to extract data from the corresponding OMOP table. Here are example queries for each table:
+- death: 
+````
+SELECT * 
+FROM omop.death 
+WHERE person_id IN (SELECT person_id FROM approved_cohort_1) 
+	AND load_dt BETWEEN @{variables('load_index')} AND GETDATE();
+````
+
+- person: 
+````
+SELECT * 
+FROM omop.person 
+WHERE person_id IN (SELECT person_id FROM approved_cohort_1) 
+	AND load_dt BETWEEN @{variables('load_index')} AND GETDATE();
+````
+
+- observation: 
+````
+SELECT * 
+FROM omop.observation 
+WHERE person_id IN (SELECT person_id FROM approved_cohort_1) 
+	AND load_dt BETWEEN @{variables('load_index')} AND GETDATE();
+````
+
+- procedure_occurrence: 
+````
+SELECT * 
+FROM omop.procedure_occurrence 
+WHERE person_id IN (SELECT person_id FROM approved_cohort_1) 
+	AND load_dt BETWEEN @{variables('load_index')} AND GETDATE();
+````
+
+- visit_occurrence: 
+````
+SELECT * 
+FROM omop.visit_occurrence 
+WHERE person_id IN (SELECT person_id FROM approved_cohort_1) 
+	AND load_dt BETWEEN @{variables('load_index')} AND GETDATE();
+````
+
+- specimen: 
+````
+SELECT * 
+FROM omop.specimen 
+WHERE person_id IN (SELECT person_id FROM approved_cohort_1) 
+	AND load_dt BETWEEN @{variables('load_index')} AND GETDATE();
+````
+
+- drug_exposure: 
+````
+SELECT * 
+FROM omop.drug_exposure 
+WHERE person_id IN (SELECT person_id FROM approved_cohort_1) 
+	AND load_dt BETWEEN @{variables('load_index')} AND GETDATE();
+````
+
+- condition_occurrence: 
+````
+SELECT * 
+FROM omop.condition_occurrence 
+WHERE person_id IN (SELECT person_id FROM approved_cohort_1) 
+	AND load_dt BETWEEN @{variables('load_index')} AND GETDATE();
+````
+
+- measurement: 
+````
+SELECT * 
+FROM omop.measurement 
+WHERE person_id IN (SELECT person_id FROM approved_cohort_1) 
+	AND load_dt BETWEEN @{variables('load_index')} AND GETDATE();
+````
+
+4. Configure the Query activities to use a JDBC connection to connect to the Databricks environment. This can be done by creating a linked service for the Databricks environment in Azure Data Factory.
+5. Add a Copy activity to the pipeline after each Query activity to move the extracted data to a landing zone within your Azure VPC. Configure the Copy activity to use an Azure Blob Storage dataset or an Azure Data Lake Storage Gen2 dataset to write the extracted data to the target directory within your VPC.
+6. Save and publish the pipeline.
+7. Create a trigger to run the pipeline on a regular schedule, such as once a week on Sunday.
+
+Note that you will need to modify the SQL queries and configuration settings to fit your specific environment and requirements. Additionally, you will need to implement the cohort selection process separately as described earlier in this conversation.
+
+## NiFi or Data Factory?
+
+- Complexity of the ETL workflow: If the ETL workflow is complex and requires custom scripting or transformation, NiFi might be a better choice due to its flexibility and ease of use in developing custom scripts.
+
+- Integration with other Azure services: If you are already using other Azure services such as Azure Synapse Analytics or Azure Machine Learning, Azure Data Factory may be a better choice due to its seamless integration with these services.
+
+- Cost: Both NiFi and Data Factory have different pricing models, and the cost can vary depending on the data volume and the specific use case. Therefore, the cost should also be considered when choosing between the two tools.
+
+- Skillset of the team: The choice between NiFi and Data Factory can also depend on the skillset of the team responsible for managing the ETL workflow. If the team has experience with one tool over the other, it may be better to stick with that tool to minimize training and learning curve.
+
+### Can NiFi handle batch processing?
+
+NiFi has no problem ingesting files of any type or size provided sufficient space exists in the content repository to store that data.
+
+For performance, Nifi only passes a FlowFile references between processors within the NiFi dataflow. Even if you "clone" a large file down two or more dataflow path, this only results in an additional reference FlowFile to the same content in the content repository. All rFlowFile references to the same content must be resolved before the actual content is removed from the repository.
+
+That being said, NiFi provides a multitude of processors for manipulating the content of FlowFiles. Anytime you modify/change the content of a FlowFile, a new FlowFile is created along with the new content. This is important because following this new content creation, you still have the original as well as your new version of the content in your content repository. So you must plan accordingly if manipulation of the content is to be done to make sure you have sufficient repository storage.
+
+JVM memory comes in to the mix most noticeably when doing any splitting of large content in to many smaller content. So if you plan on producing more then say 10,000 individual FlowFiles for a single Large FlowFile, you will likely need additional JVM memory allocation to your NiFi.
+
+As you can see a lot more needs to be considered beyond just the size of teh data being ingested when planning out your NiFi needs.
