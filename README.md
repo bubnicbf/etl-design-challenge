@@ -2,7 +2,7 @@
 
 I am pleased to submit to you the design challenge solution for your ETL process that meets the requirements and constraints set forth by your data collaborators. My goal is to move data from their Databricks environment on Azure, apply custom transformations, validate and de-identify the data, and load it into your target data store and analytics platform. To achieve this, I have chosen to use a combination of NiFi and Azure Data Factory, along with custom Python scripts, to perform the necessary data movement, validation, and de-identification tasks. I also discuss the differences between NiFi and Azure Data Factory in several key areas. My design takes into account the need to ensure compliance with applicable regulations and policies, as well as the need to conduct regular reviews of the de-identified data. I believe my solution meets the requirements of your data collaborators while also providing a scalable and efficient process for managing large volumes of data.
 
-<!-- ![pipeline image](img/pipeline.jpg) -->
+![pipeline image](https://github.com/bubnicbf/etl-design-challenge/blob/main/ingest_data_flow/ingest_data_flow.jpg)
 
 1. [Data Sources](https://github.com/bubnicbf/etl-design-challenge/blob/main/integration_pipeline/01_data_sources.md)  
 2. [Transformations](https://github.com/bubnicbf/etl-design-challenge/blob/main/integration_pipeline/02_transformations.md)  
