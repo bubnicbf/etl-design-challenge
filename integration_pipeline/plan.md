@@ -1,5 +1,28 @@
 # Plan
 
+## Outline
+
+1. Cohort selection: Use a custom script or tool to select data only for the approved patient identifiers for each cohort defined by the Data Collaborator.
+
+1. Extract: Use Azure Data Factory to extract data from the Databricks environment and move it to a landing zone within your Azure VPC.
+
+1. Validation: Use Azure Data Factory to validate the extracted data in the landing zone. Use QueryDatabaseTable processors to execute validation SQL queries on each table.
+
+1. Transformation: Use Azure Data Factory to perform any necessary transformations on the data, including de-identification.
+
+1. Loading: Use Azure Data Factory to load the transformed data into the target data store or analytics platform, such as Azure Synapse Analytics or Azure Data Lake Storage.
+
+The specific tools used at each step are as follows:
+
+- Cohort selection: Custom script or tool.
+- Extract: Azure Data Factory.
+- Validation: Azure Data Factory, QueryDatabaseTable processors.
+- Transformation: Azure Data Factory.
+- Loading: Azure Data Factory.
+
+
+## High level view
+
 1. Identify the source systems: The data is stored in a Databricks environment on Azure. Access to the Databricks environment can be established using a virtual private network (VPN) or Azure ExpressRoute to ensure that data remains within your Azure VPC.
 
 1. Establish connectivity: Use a JDBC connector to connect to the Databricks environment and extract data from the OMOP v5.3 schema using SQL queries.
@@ -17,3 +40,4 @@
 1. Incremental updates: Schedule the ETL pipeline to run once a week on Sunday and perform incremental updates to the data by identifying new rows based on the "load_dt" timestamp column. Use a custom script or tool to calculate the rate of increase in row count per table per cohort and adjust the pipeline accordingly.
 
 1. Sandbox schema: Use a dedicated sandbox schema in your target data store or analytics platform to create tables and views as needed for the data transformations.
+

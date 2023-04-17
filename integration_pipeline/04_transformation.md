@@ -1,6 +1,242 @@
 # Transformation
 
-## Data Factory ETL
+## ETL using NiFi
+
+1. Use Apache NiFi to create a dataflow and configure a source processor to read the validated data from the landing zone in your Azure VPC. This can be done using a variety of supported processors, such as the GetAzureBlobStorage processor or the GetAzureDataLakeStorageV2 processor.
+
+GetAzureDataLakeStorageV2 processor to read validated data from Azure Data Lake Storage:
+
+````
+<?xml version="1.0" encoding="UTF-8"?>
+<template encoding-version="1.0">
+    <description>Example NiFi flow for reading validated data from Azure Data Lake Storage</description>
+    <snippet>
+        <processors>
+            <processor>
+                <id>12345678-1234-1234-1234-123456789012</id>
+                <class>org.apache.nifi.azure.datalake.storage.v2.GetAzureDataLakeStorageV2</class>
+                <name>Get Validated Data</name>
+                <property>
+                    <name>Account Name</name>
+                    <value>your_account_name</value>
+                    <description>The name of the Azure Storage account to use.</description>
+                    <sensitive>true</sensitive>
+                </property>
+                <property>
+                    <name>Client ID</name>
+                    <value>your_client_id</value>
+                    <description>The ID of the Azure AD application used to authenticate.</description>
+                    <sensitive>true</sensitive>
+                </property>
+                <property>
+                    <name>Client Secret</name>
+                    <value>your_client_secret</value>
+                    <description>The client secret associated with the Azure AD application.</description>
+                    <sensitive>true</sensitive>
+                </property>
+                <property>
+                    <name>Tenant ID</name>
+                    <value>your_tenant_id</value>
+                    <description>The ID of the Azure AD tenant associated with the Azure Storage account.</description>
+                    <sensitive>true</sensitive>
+                </property>
+                <property>
+                    <name>Directory</name>
+                    <value>/validated_data</value>
+                    <description>The path to the directory in your Azure Data Lake Storage where the validated data files are located.</description>
+                </property>
+                <property>
+                    <name>File Filter</name>
+                    <value>*.csv</value>
+                    <description>The filename pattern of the validated data files you want to read.</description>
+                </property>
+            </processor>
+        </processors>
+        <connections>
+            <connection>
+                <source>12345678-1234-1234-1234-123456789012</source>
+                <destination>45678901-2345-6789-0123-456789012345</destination>
+                <name>Get Validated Data to Next Processor</name>
+            </connection>
+        </connections>
+    </snippet>
+</template>
+````
+
+2. Use the data transformation capabilities built into Apache NiFi to transform the validated data as necessary to meet the requirements of your target data store or analytics platform. This may include additional data transformations, de-identification, or data enrichment. You can use a variety of transformation processors in Apache NiFi, such as the ExecuteScript processor, the QueryRecord processor, or the ConvertRecord processor, depending on your specific transformation requirements and preferred technology stack.
+
+- Create a dataflow in Apache NiFi: Use the NiFi UI to create a dataflow and add processors to perform the necessary data transformations. The dataflow should begin with a source processor that reads the validated data from the landing zone in your Azure VPC.
+
+- Use transformation processors: Apache NiFi offers a variety of built-in processors for data transformation, including the ExecuteScript processor, QueryRecord processor, and ConvertRecord processor. Use the appropriate processor(s) to perform the necessary data transformations, depending on your specific requirements.
+
+- Configure transformation processors: Each processor should be configured with the appropriate properties, such as SQL queries, scripts, or mapping rules, to perform the necessary transformations.
+
+Apache NiFi can be used to transform the data at this step by using a variety of built-in processors that allow for data transformation (ExecuteScript, ConvertRecord, JoltTransformJSON, etc.).  Additionally custom code can be implemented for any desired complex transformations.
+
+````
+import json
+import requests
+from nipyapi import canvas, nifi
+
+# Get the NiFi processor group
+pg = nifi.ProcessGroupApi().get_process_group(pg_id, 'id')
+pg_name = pg.component.name
+
+# Define the data transformation function
+def transform_data(data):
+    transformed_data = []
+    for record in data:
+        # Apply transformation logic
+        transformed_record = {}
+        transformed_record['field1'] = record['field1'] + '_transformed'
+        transformed_record['field2'] = record['field2'] * 2
+        transformed_data.append(transformed_record)
+    return transformed_data
+
+# Define the NiFi processors for the data transformation
+get_data_processor = canvas.get_processor(processor_id=processor_id)
+transform_data_processor = nifi.ProcessorBuilder('Transform Data').property('Script Engine', 'python').property('Script Body', '''
+    import json
+    
+    def transform_data(data):
+        transformed_data = []
+        for record in data:
+            # Apply transformation logic
+            transformed_record = {}
+            transformed_record['field1'] = record['field1'] + '_transformed'
+            transformed_record['field2'] = record['field2'] * 2
+            transformed_data.append(transformed_record)
+        return transformed_data
+    
+    output_data = transform_data(json.loads(flowfile.getAttribute('data')))
+    flowfile = session.putAttribute(flowfile, 'data', json.dumps(output_data))
+    session.transfer(flowfile, REL_SUCCESS)
+''').add_relationship('success', 'Transform Data', 'success')
+
+# Connect the processors
+canvas.create_connection(get_data_processor, transform_data_processor, 'success')
+
+# Start the NiFi dataflow
+canvas.schedule_process_group(pg, true)
+
+````
+
+3. Create a sink processor to load the transformed data into your target data store or analytics platform. This can be done using a variety of supported sink processors, such as the PutAzureSynapseAnalytics processor, the PutAzureSqlDatabase processor, or the PutAzureBlobStorage processor.
+
+- Configure the sink processor to load the transformed data into the target data store or analytics platform using the appropriate loading mechanism, such as inserting data into a table or writing data to a file, depending on the specific connector and target data store being used.
+
+    - Storage Account Name/Key
+    - Container Name for each Cohort
+    - Blob Name for each patient
+    - Use Chunking if using batch processing
+    - Chunk Size for batch size
+    - Max Concurrent Request for optimization
+
+- Configure the appropriate data loading settings in the sink processor, such as the column mapping, file format, and batch size. You can also configure performance optimization settings, such as parallelism and partitioning, to optimize the data loading process.
+
+````
+{
+  "revision": {
+    "version": 0
+  },
+  "id": "example-processor",
+  "parentGroupId": "example-group",
+  "position": {
+    "x": 100,
+    "y": 100
+  },
+  "component": {
+    "type": "PutAzureBlobStorage",
+    "bundle": {
+      "group": "org.apache.nifi",
+      "artifact": "nifi-azure-bundle",
+      "version": "1.13.2"
+    },
+    "name": "PutAzureBlobStorage",
+    "properties": {
+      "Blob Storage Name": "example-blob-storage",
+      "Account Name": "example-account-name",
+      "Account Key": "example-account-key",
+      "Container Name": "example-container-name",
+      "Directory": "/example/directory",
+      "Compress": "true",
+      "Permissions": "0777"
+    },
+    "relationships": [
+      {
+        "name": "success",
+        "autoTerminate": false
+      },
+      {
+        "name": "failure",
+        "autoTerminate": true
+      }
+    ],
+    "supportsBatching": true
+  }
+}
+
+````
+
+4. Configure a connection between the source processor and the sink processor in your Apache NiFi dataflow to move the transformed data from the source to the sink. The connection will handle the data loading mechanism, such as inserting data into a table or writing data to a file, depending on the specific processor and target data store being used.
+
+5. Configure the appropriate data loading settings in the sink processor, such as the column mapping, file format, and batch size. You can also configure performance optimization settings, such as parallelism and threading, to optimize the data loading process.
+
+- Configure the settings according to the requirements of your target data store or analytics platform. This may involve mapping the columns in the source data to the columns in the target data store, specifying the file format and compression settings, and setting the batch size to optimize performance.
+
+````
+{
+  "revision": {
+    "version": 0
+  },
+  "component": {
+    "name": "PutAzureBlobStorage",
+    "type": "org.apache.nifi.azure.storage.PutAzureBlobStorage",
+    "properties": {
+      "Blob Storage Connection": "your_connection",
+      "Blob Storage Container": "your_container",
+      "File Name": "your_file_name",
+      "Content Type": "text/plain",
+      "Storage Strategy": "COMPOSED",
+      "Compression Format": "NONE",
+      "Conflict Resolution Strategy": "REPLACE_ON_NO_CONFLICT",
+      "Overwrite Existing": "true",
+      "Block Size": "512 MB",
+      "Max Wait Time": "1 min",
+      "Minimum File Age": "0 sec",
+      "Proxy Configuration Service": "",
+      "Put Mode": "STREAMING"
+    },
+    "relationships": {
+      "success": {
+        "name": "success",
+        "description": ""
+      },
+      "failure": {
+        "name": "failure",
+        "description": ""
+      }
+    }
+  }
+}
+
+````
+
+6. Start the Apache NiFi dataflow to load the transformed data into your target data store or analytics platform.
+
+### Data Factory ETL example
+
+There are several circumstances in which you might want to use Azure Data Factory instead of NiFi for transformation:
+
+- Integration with Azure Services: If you are using a lot of Azure services, Azure Data Factory might be a better fit because it has tight integration with many Azure services, making it easier to use them in your data pipeline.
+
+- Familiarity with SQL: If you are more comfortable working with SQL for your transformations, Azure Data Factory has built-in support for SQL transformations, which may make it a more natural choice for you.
+
+- Data Volume: If you are dealing with a large volume of data, Azure Data Factory can handle the scale-out process better than NiFi, which is more suitable for smaller data volumes.
+
+- Budget: If cost is a significant concern, Azure Data Factory might be more cost-effective because it uses a pay-as-you-go pricing model, which allows you to scale up and down as needed.
+
+- Simplicity: If your ETL process is relatively straightforward, and you do not require a lot of customization, Azure Data Factory might be a simpler and more straightforward option to use.
 
 1. Create an Azure Data Factory pipeline and configure a source dataset to read the validated data from the landing zone in your Azure VPC. This can be done using a variety of supported data source connectors, such as the Azure Blob Storage connector or the Azure Data Lake Storage Gen1 connector.
 2. Use the data transformation capabilities built into Azure Data Factory to transform the validated data as necessary to meet the requirements of your target data store or analytics platform. This may include additional data transformations, de-identification, or data enrichment. You can use a variety of transformation activities in Azure Data Factory, such as the Data Flow activity, the HDInsight Hive activity, or the Databricks Notebook activity, depending on your specific transformation requirements and preferred technology stack.
