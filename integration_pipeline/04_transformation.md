@@ -1,6 +1,29 @@
 # Transformation
 
-## ETL using NiFi
+## ETL using Data Factory
+
+The data transformation stage will likely need to have input from both developers and delivery specialists.  Given the wide range of technical expertise involved with this step, Azure Data Factory might be a better choice, as it provides a more graphical interface and supports a wider range of data transformation activities out of the box. This allows less technical talent to work with the data more easily, without requiring extensive coding expertise. Additionally, Azure Data Factory provides more built-in connectors to popular data stores and services, reducing the need for custom coding.
+
+There are several circumstances in which you might want to use Azure Data Factory instead of NiFi for transformation:
+
+- Integration with Azure Services: If you are using a lot of Azure services, Azure Data Factory might be a better fit because it has tight integration with many Azure services, making it easier to use them in your data pipeline.
+
+- Familiarity with SQL: If you are more comfortable working with SQL for your transformations, Azure Data Factory has built-in support for SQL transformations, which may make it a more natural choice for you.
+
+- Data Volume: If you are dealing with a large volume of data, Azure Data Factory can handle the scale-out process better than NiFi, which is more suitable for smaller data volumes.
+
+- Budget: If cost is a significant concern, Azure Data Factory might be more cost-effective because it uses a pay-as-you-go pricing model, which allows you to scale up and down as needed.
+
+- Simplicity: If your ETL process is relatively straightforward, and you do not require a lot of customization, Azure Data Factory might be a simpler and more straightforward option to use.
+
+1. Create an Azure Data Factory pipeline and configure a source dataset to read the validated data from the landing zone in your Azure VPC. This can be done using a variety of supported data source connectors, such as the Azure Blob Storage connector or the Azure Data Lake Storage Gen1 connector.
+2. Use the data transformation capabilities built into Azure Data Factory to transform the validated data as necessary to meet the requirements of your target data store or analytics platform. This may include additional data transformations, de-identification, or data enrichment. You can use a variety of transformation activities in Azure Data Factory, such as the Data Flow activity, the HDInsight Hive activity, or the Databricks Notebook activity, depending on your specific transformation requirements and preferred technology stack.
+3. Create a sink dataset to load the transformed data into your target data store or analytics platform. This can be done using a variety of supported data sink connectors, such as the Azure Synapse Analytics connector, the Azure SQL Database connector, or the Azure Blob Storage connector.
+4. Configure a copy activity in your Azure Data Factory pipeline to move the transformed data from the source dataset to the sink dataset. The copy activity will handle the data loading mechanism, such as inserting data into a table or writing data to a file, depending on the specific connector and target data store being used.
+5. Configure the appropriate data loading settings in the copy activity, such as the column mapping, file format, and batch size. You can also configure performance optimization settings, such as parallelism and partitioning, to optimize the data loading process.
+6. Start the Azure Data Factory pipeline to load the transformed data into your target data store or analytics platform.
+
+### NiFi ETL example
 
 There are several circumstances where using NiFi for data transformation may be more appropriate than using Azure Data Factory.
 
@@ -233,27 +256,6 @@ canvas.schedule_process_group(pg, true)
 ````
 
 6. Start the Apache NiFi dataflow to load the transformed data into your target data store or analytics platform.
-
-### Data Factory ETL example
-
-There are several circumstances in which you might want to use Azure Data Factory instead of NiFi for transformation:
-
-- Integration with Azure Services: If you are using a lot of Azure services, Azure Data Factory might be a better fit because it has tight integration with many Azure services, making it easier to use them in your data pipeline.
-
-- Familiarity with SQL: If you are more comfortable working with SQL for your transformations, Azure Data Factory has built-in support for SQL transformations, which may make it a more natural choice for you.
-
-- Data Volume: If you are dealing with a large volume of data, Azure Data Factory can handle the scale-out process better than NiFi, which is more suitable for smaller data volumes.
-
-- Budget: If cost is a significant concern, Azure Data Factory might be more cost-effective because it uses a pay-as-you-go pricing model, which allows you to scale up and down as needed.
-
-- Simplicity: If your ETL process is relatively straightforward, and you do not require a lot of customization, Azure Data Factory might be a simpler and more straightforward option to use.
-
-1. Create an Azure Data Factory pipeline and configure a source dataset to read the validated data from the landing zone in your Azure VPC. This can be done using a variety of supported data source connectors, such as the Azure Blob Storage connector or the Azure Data Lake Storage Gen1 connector.
-2. Use the data transformation capabilities built into Azure Data Factory to transform the validated data as necessary to meet the requirements of your target data store or analytics platform. This may include additional data transformations, de-identification, or data enrichment. You can use a variety of transformation activities in Azure Data Factory, such as the Data Flow activity, the HDInsight Hive activity, or the Databricks Notebook activity, depending on your specific transformation requirements and preferred technology stack.
-3. Create a sink dataset to load the transformed data into your target data store or analytics platform. This can be done using a variety of supported data sink connectors, such as the Azure Synapse Analytics connector, the Azure SQL Database connector, or the Azure Blob Storage connector.
-4. Configure a copy activity in your Azure Data Factory pipeline to move the transformed data from the source dataset to the sink dataset. The copy activity will handle the data loading mechanism, such as inserting data into a table or writing data to a file, depending on the specific connector and target data store being used.
-5. Configure the appropriate data loading settings in the copy activity, such as the column mapping, file format, and batch size. You can also configure performance optimization settings, such as parallelism and partitioning, to optimize the data loading process.
-6. Start the Azure Data Factory pipeline to load the transformed data into your target data store or analytics platform.
 
 ## De-identification
 

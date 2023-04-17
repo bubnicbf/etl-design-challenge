@@ -42,6 +42,8 @@ In the context of data extraction, processing speed refers to how quickly the da
 
 ### NiFi example
 
+NiFi might be a better choice for data extraction considering the developers working on this starge. NiFi provides a more code-based approach to data extraction, allowing data engineers to write more custom code to extract the data they need. On the other hand, Azure Data Factory provides a more graphical interface that is easier to use for less technical talent, making it a better choice for data transformation.
+
 1. Configure NiFi: First, you need to configure NiFi with the appropriate JDBC driver for the Databricks environment and set up a connection to the OMOP schema. This involves creating a JDBC connection pool, configuring the driver class, the database URL, and the authentication credentials. Next you'll need to configured a DBCP connection pool in NiFi to connect to the Databricks environment.
 
 2. Create a dataflow: Once NiFi is configured, you can create a dataflow to extract data from the OMOP tables and move it to a landing zone within your Azure VPC. The dataflow should include processors to extract data from each of the OMOP tables, apply any necessary data transformations, and move the data to a landing zone.
