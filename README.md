@@ -5,8 +5,8 @@ I am pleased to submit to you the design challenge solution for your ETL process
 ![pipeline image](https://github.com/bubnicbf/etl-design-challenge/blob/main/ingest_data_flow/ingest_data_flow.jpg)
 
 1. [Data Sources](https://github.com/bubnicbf/etl-design-challenge/blob/main/integration_pipeline/01_data_sources.md)  
-2. [Transformations](https://github.com/bubnicbf/etl-design-challenge/blob/main/integration_pipeline/02_ingestion_transport.md)  
-3. [Load and Validation](https://github.com/bubnicbf/etl-design-challenge/blob/main/integration_pipeline/03_landing_zone.md)  
+2. [Ingestion & Transport](https://github.com/bubnicbf/etl-design-challenge/blob/main/integration_pipeline/02_ingestion_transport.md)  
+3. [Landing Zone](https://github.com/bubnicbf/etl-design-challenge/blob/main/integration_pipeline/03_landing_zone.md)  
 4. [Transformation](https://github.com/bubnicbf/etl-design-challenge/blob/main/integration_pipeline/04_transformation.md)  
 
 
