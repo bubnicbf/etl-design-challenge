@@ -2,6 +2,16 @@
 
 ## ETL using NiFi
 
+There are several circumstances where using NiFi for data transformation may be more appropriate than using Azure Data Factory.
+
+- Complex data transformations: NiFi has a rich set of built-in processors and allows for custom script execution, making it more flexible for complex data transformations. It also has support for multiple data formats, including binary data, which may be necessary for certain types of data transformations.
+
+- Customization: NiFi is highly customizable, and users can create custom processors and plugins to extend its capabilities. This makes it a better choice for organizations that have unique data transformation requirements that cannot be met by off-the-shelf tools.
+
+- Cost: NiFi is an open-source tool, which means that there are no licensing fees associated with its use. This can be a significant cost savings for organizations that are working with large volumes of data and need to scale their data transformation capabilities.
+
+- Development agility: NiFi has a visual interface for designing dataflows, which allows for rapid development and iteration of data transformation pipelines. This makes it a good choice for organizations that need to rapidly iterate on their data transformation pipelines and test new ideas.
+
 1. Use Apache NiFi to create a dataflow and configure a source processor to read the validated data from the landing zone in your Azure VPC. This can be done using a variety of supported processors, such as the GetAzureBlobStorage processor or the GetAzureDataLakeStorageV2 processor.
 
 GetAzureDataLakeStorageV2 processor to read validated data from Azure Data Lake Storage:

@@ -32,6 +32,16 @@ This will extract data only for the patient identifiers in the approved_cohort_1
 
 ## Extractors
 
+One advantage of using NiFi is its flexibility in handling various data sources and destinations. NiFi has a wide range of built-in processors and connectors that can be used to extract data from different sources, such as databases, files, and APIs, and load it into different destinations, such as data lakes, data warehouses, and cloud storage. NiFi can also handle complex data processing tasks and support real-time data streaming.
+
+On the other hand, Azure Data Factory has built-in connectors to various Azure services, making it easier to extract and load data into Azure services. It also has a user-friendly interface for creating and managing data pipelines, and provides advanced scheduling and monitoring features.
+
+In terms of performance, both NiFi and Azure Data Factory are designed to handle large volumes of data, but NiFi may have an edge in terms of processing speed and low latency due to its real-time data streaming capabilities. 
+
+In the context of data extraction, processing speed refers to how quickly the data can be extracted, transformed, and loaded into a target system, while low latency refers to how quickly the system can respond to user requests or changes in the data. A system with high processing speed and low latency will be able to handle large amounts of data quickly and respond to user requests in a timely manner.
+
+### NiFi example
+
 1. Configure NiFi: First, you need to configure NiFi with the appropriate JDBC driver for the Databricks environment and set up a connection to the OMOP schema. This involves creating a JDBC connection pool, configuring the driver class, the database URL, and the authentication credentials. Next you'll need to configured a DBCP connection pool in NiFi to connect to the Databricks environment.
 
 2. Create a dataflow: Once NiFi is configured, you can create a dataflow to extract data from the OMOP tables and move it to a landing zone within your Azure VPC. The dataflow should include processors to extract data from each of the OMOP tables, apply any necessary data transformations, and move the data to a landing zone.
@@ -283,7 +293,7 @@ This will extract data only for the patient identifiers in the approved_cohort_1
 
 - Note: this example assumes you have configured a DBCP connection pool in NiFi to connect to the Databricks environment, and that you have created a directory in the landing zone for each OMOP table.
 
-### Azura Data Factory example
+### Azure Data Factory example
 
 1. Create a new pipeline in Azure Data Factory.
 2. Add a Query activity to the pipeline for each OMOP table you want to extract.
