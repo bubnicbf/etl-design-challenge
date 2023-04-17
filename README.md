@@ -9,6 +9,19 @@ I am pleased to submit to you the design challenge solution for your ETL process
 3. [Load and Validation](https://github.com/bubnicbf/etl-design-challenge/blob/main/integration_pipeline/03_load_and_validation.md)  
 4. [Transformation](https://github.com/bubnicbf/etl-design-challenge/blob/main/integration_pipeline/04_transformation.md)  
 
+
+## Automation
+
+Both NiFi and Azure Data Factory allow you to schedule the pipeline to run at specified intervals. This can be done through the built-in scheduling features or using external scheduling tools such as Airflow.
+
+Apache Airflow can be used to automate the OMOP ETL workflow, allowing for more efficient and reliable processing of large data volumes. With Airflow, you can create a DAG (Directed Acyclic Graph) that represents the data pipeline, with each task representing a step in the ETL process.
+
+Airflow is an open-source platform to programmatically author, schedule, and monitor workflows. It is designed to orchestrate complex workflows and data pipelines.
+
+You can also define a DAG (Directed Acyclic Graph) that represents the workflow. The DAG can be defined using Python code and can include tasks that correspond to each step in the ETL process, including data extraction, transformation, and loading. Each task can be associated with an operator, which is a Python class that defines the behavior of the task.
+
+Overall, Airflow provides a powerful and flexible framework for automating complex ETL workflows. It allows you to define workflows using Python code, integrate with a wide range of data sources and targets, and monitor and manage workflows using a web-based UI or a command-line interface.
+
 ## Modularization
 
 Modularization is an important aspect of software engineering, and it applies to the design of ETL solutions as well. In a modularized ETL solution, the various components of the solution are designed and implemented as independent modules that can be easily reused in other ETL processes or even in other software applications. This approach makes the solution more flexible, scalable, and maintainable.

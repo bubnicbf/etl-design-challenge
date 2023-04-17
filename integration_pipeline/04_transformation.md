@@ -23,6 +23,57 @@ There are several circumstances in which you might want to use Azure Data Factor
 5. Configure the appropriate data loading settings in the copy activity, such as the column mapping, file format, and batch size. You can also configure performance optimization settings, such as parallelism and partitioning, to optimize the data loading process.
 6. Start the Azure Data Factory pipeline to load the transformed data into your target data store or analytics platform.
 
+#### Airflow
+
+To use Airflow with Azure Data Factory, you can define a task in the DAG that triggers an Azure Data Factory pipeline using the AzureDataFactoryOperator. The operator can execute a command that triggers a specific pipeline in Azure Data Factory. The command can be defined using Azure Data Factory's REST API, which allows you to start and stop pipelines, as well as monitor their status and performance.
+
+Here is an example of how you can use Airflow to automate the OMOP ETL process:
+
+1. Create a DAG for the OMOP ETL process with the following tasks:
+- Task 1: Extract data from the landing zone using NiFi or Azure Data Factory
+- Task 2: Transform the data using NiFi or Azure Data Factory
+- Task 3: De-identify the data using Python scripts
+- Task 4: Validate the data using Python scripts
+- Task 5: Load the data into the target data store using NiFi or Azure Data Factory
+
+2. Configure each task with the appropriate parameters, such as the source and target data locations, the validation criteria, and the de-identification scripts.
+
+3. Set up dependencies between the tasks, ensuring that each task runs in the correct order. For example, Task 2 should not start until Task 1 has completed.
+
+4. Schedule the DAG to run at a specific time or interval, such as every week or every day.
+
+5. Monitor the DAG and individual tasks to ensure that they complete successfully and troubleshoot any issues that arise.
+
+````
+from airflow import DAG
+from airflow.operators.python_operator import PythonOperator
+from datetime import datetime, timedelta
+
+default_args = {
+    'owner': 'me',
+    'start_date': datetime(2023, 4, 1),
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+dag = DAG('omop_etl', default_args=default_args, schedule_interval='@weekly')
+
+task_1 = PythonOperator(
+    task_id='extract_data',
+    python_callable=extract_data,
+    dag=dag
+)
+
+task_2 = PythonOperator(
+    task_id='transform_data',
+    python_callable=transform_data,
+    dag=dag
+)
+
+task_1 >> task_2
+
+````
+
 ### NiFi ETL example
 
 There are several circumstances where using NiFi for data transformation may be more appropriate than using Azure Data Factory.

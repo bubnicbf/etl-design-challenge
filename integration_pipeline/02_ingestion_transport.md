@@ -295,6 +295,11 @@ NiFi might be a better choice for data extraction considering the developers wor
 
 - Note: this example assumes you have configured a DBCP connection pool in NiFi to connect to the Databricks environment, and that you have created a directory in the landing zone for each OMOP table.
 
+#### Airflow
+
+To use Airflow with NiFi, you can define a task in the DAG that invokes a NiFi dataflow using the ExecuteProcess operator. The operator can execute a command that starts a NiFi instance and runs a specific dataflow. The command can be defined using NiFi's command-line interface (CLI), which allows you to start and stop dataflows, as well as configure their properties and parameters.
+
+
 ### Azure Data Factory example
 
 1. Create a new pipeline in Azure Data Factory.

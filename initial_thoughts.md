@@ -68,3 +68,13 @@ Needs to deploy on VPC to avoid moving PHI data outside VPC
 - ETL pipeline tests
 	- create test data
 	- create test cases for different data sources and transformations
+
+## Automation
+
+- Schedule the pipeline: Both NiFi and Azure Data Factory allow you to schedule the pipeline to run at specified intervals. This can be done through the built-in scheduling features or using external scheduling tools such as Airflow.
+
+- Use triggers: You can use triggers to automate the pipeline based on specific events, such as the availability of new data in the landing zone or the completion of a previous step in the workflow.
+
+- Use containerization: You can use containerization tools such as Docker and Kubernetes to package and deploy the ETL process as a containerized application. This allows for easy scaling and deployment across multiple environments.
+
+- Use serverless computing: Serverless computing platforms such as Azure Functions can be used to automate the ETL process without the need for managing infrastructure. You can trigger the functions based on specific events or schedules.
