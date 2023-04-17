@@ -25,14 +25,14 @@
 
 3. Transform the validated data using the Data Flow activity in Azure Data Factory, which provides a visual interface to build data transformations using a drag-and-drop interface. This may include additional data transformations, de-identification, or data enrichment.
 
-- Transform Data using NiFi
+- Transform Data using Data Factory
 	- QueryDatabaseTable processor to extract data from each table
 	- ExecuteScript processor to apply custom transformations
 	- ConvertRecord processor to change the format of data
 	- SplitText processor to separate values within fields
 - De-identify data as necessary
 	- Apply data masking or encryption as necessary
-- Validate Data using NiFi
+- Validate Data using Data Profiling, Data Quality Services, or custom Databricks/Jupyter notebooks
 	- Develop validation scripts to verify data quality
 	- Configure validation processors to execute validation logic
 	- Configure logging and alerts for validation errors
